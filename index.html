@@ -9,117 +9,113 @@
   <link rel="icon" sizes="512x512" href="icon-512.png">
   <meta name="theme-color" content="#2255a4">
   <style>
-    /* Fix input width: */
-    * { box-sizing: border-box; }
+  * { box-sizing: border-box; }
 
-    body { 
-      font-family: Arial, sans-serif; 
-      padding: 5vw; 
-      background: #f9f9f9; 
-    }
-    .container { 
-      background: white; 
-      padding: 6vw 5vw; 
-      border-radius: 12px; 
-      box-shadow: 0 2px 8px #0001; 
-      max-width: 98vw; 
-      width: 400px; 
-      margin: 0 auto; 
-    }
-    h2 { 
-      margin-top: 0; 
-      font-size: 2em;
-    }
-    label { 
-      display: block; 
-      margin: 16px 0 6px; 
-      font-size: 1.1em;
-    }
-    select, input { 
-      width: 100%; 
-      padding: 10px; 
-      border-radius: 6px; 
-      border: 1px solid #bbb; 
-      font-size: 1.1em;
-      margin-bottom: 2px;
-    }
-    button, .lang-btn { 
-      margin-top: 18px; 
-      width: 100%; 
-      padding: 14px 0; 
-      border: none; 
-      border-radius: 8px; 
-      background: #2255a4; 
-      color: white; 
-      font-size: 1.15em; 
-      cursor: pointer; 
-      transition: background 0.2s;
-    }
-    button:active, .lang-btn:active {
-      background: #184077;
-    }
-    .lang-btn { 
-      width: 48%; 
-      margin: 0 1% 20px 0; 
-      background: #eee; 
-      color: #333; 
-      border: 1px solid #bbb; 
-      font-size: 1.1em;
-    }
-    .lang-btn.selected { 
-      background: #2255a4; 
-      color: #fff; 
-      border: none; 
-    }
-    .btn-row { 
-      display: flex; 
-      gap: 4%; 
-    }
-    .result { 
-      margin-top: 24px; 
-      padding: 14px; 
-      background: #eef6fa; 
-      border-radius: 8px; 
-      border-left: 4px solid #2295d1; 
-      font-size: 1.15em;
-    }
-    #install-btn {
-      display: none;
-      background: #2295d1;
-      font-size: 1em;
-      margin-top: 18px;
-      width: 100%;
-      border-radius: 8px;
-      padding: 12px 0;
-    }
-    @media (max-width: 600px) {
-      .container {
-        padding: 4vw 2vw;
-        width: 100%;
-        max-width: 100vw;
-      }
-      h2 {
-        font-size: 1.3em;
-      }
-      button, .lang-btn, #install-btn {
-        font-size: 1em;
-        padding: 12px 0;
-      }
-      label, .result {
-        font-size: 1em;
-      }
-      select, input {
-        font-size: 1em;
-        padding: 9px;
-      }
-    }
+	body { 
+	  font-family: Arial, sans-serif; 
+	  padding: 5vw; 
+	  background: #f9f9f9; 
+	}
+
+	.container { 
+	  background: white; 
+	  padding: 6vw 5vw; 
+	  border-radius: 12px; 
+	  box-shadow: 0 2px 8px #0001; 
+	  max-width: 98vw; 
+	  width: 400px; 
+	  margin: 0 auto; 
+	}
+
+	h2 { 
+	  margin-top: 0; 
+	  font-size: 2em;
+	}
+
+	label { 
+	  display: block; 
+	  margin: 16px 0 6px; 
+	  font-size: 1.1em;
+	}
+
+	select, input { 
+	  width: 100%; 
+	  padding: 10px; 
+	  border-radius: 6px; 
+	  border: 1px solid #bbb; 
+	  font-size: 1.1em;
+	}
+
+	button, .lang-btn { 
+	  margin-top: 18px; 
+	  width: 100%; 
+	  padding: 14px 0; 
+	  border: none; 
+	  border-radius: 8px; 
+	  background: #2255a4; 
+	  color: white; 
+	  font-size: 1.15em; 
+	  cursor: pointer; 
+	  transition: background 0.2s;
+	}
+
+	button:active, .lang-btn:active {
+	  background: #184077;
+	}
+
+	.lang-btn { 
+	  width: 48%; 
+	  margin: 0 1% 20px 0; 
+	  background: #eee; 
+	  color: #333; 
+	  border: 1px solid #bbb; 
+	  font-size: 1.1em;
+	}
+
+	.lang-btn.selected { 
+	  background: #2255a4; 
+	  color: #fff; 
+	  border: none; 
+	}
+
+	.btn-row { 
+	  display: flex; 
+	  gap: 4%; 
+	}
+
+	.result { 
+	  margin-top: 24px; 
+	  padding: 14px; 
+	  background: #eef6fa; 
+	  border-radius: 8px; 
+	  border-left: 4px solid #2295d1; 
+	  font-size: 1.15em;
+	}
+
+	@media (max-width: 600px) {
+	  .container {
+		padding: 8vw 2vw;
+		width: 100%;
+		max-width: 100vw;
+	  }
+	  h2 {
+		font-size: 1.3em;
+	  }
+	  button, .lang-btn {
+		font-size: 1em;
+		padding: 12px 0;
+	  }
+	  label, .result {
+		font-size: 1em;
+	  }
+	}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="btn-row">
-      <button type="button" class="lang-btn selected" id="btn-it">🇮🇹 Italiano</button>
-      <button type="button" class="lang-btn" id="btn-en">🇬🇧 English</button>
+      <button type="button" class="lang-btn selected" id="btn-it">🇮🇹</button>
+      <button type="button" class="lang-btn" id="btn-en">🇬🇧</button>
     </div>
     <h2 id="title">Selettore Contenitore Cavo 2AWG</h2>
     <form id="cableForm">
@@ -137,30 +133,14 @@
     </form>
 
     <div id="result" class="result" style="display: none;"></div>
-    <!-- Bottone PWA install -->
-    <button id="install-btn" style="display:none;">Installa App</button>
   </div>
 
   <script>
-    // PWA INSTALL PROMPT
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('install-btn').style.display = 'block';
-    });
-    document.getElementById('install-btn').addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-      }
-    });
-
-    // ---- RESTO DEL CODICE JS DEL MODULO ----
-
     // Conversion constants
     const meterToFeet = 3.28084;
     const cmToInches = 0.393701;
+
+    // DATA - All in METRIC (cm/metri)
     const capacitiesMetric = {
       '2/3': [
         { maxLen: 23, size: 'Custom: 24” (60cm) diam x 22” (56cm) h', sizeEn: 'Custom: 24” (60 cm) dia x 22” (56 cm) h' },
@@ -329,12 +309,11 @@
     updateLang('it');
   </script>
   <script>
-    // Service worker registration
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js');
+    });
+  }
   </script>
 </body>
 </html>
