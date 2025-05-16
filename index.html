@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Selettore Contenitore Cavo 2AWG</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f9f9f9; }
+    .container { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 2px 8px #0001; max-width: 430px; margin: 0 auto; }
+    h2 { margin-top: 0; }
+    label { display: block; margin: 16px 0 6px; }
+    select, input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #bbb; }
+    button, .lang-btn { margin-top: 18px; width: 100%; padding: 12px; border: none; border-radius: 8px; background: #2255a4; color: white; font-size: 1.1em; cursor: pointer; }
+    .lang-btn { width: 48%; margin: 0 1% 20px 0; background: #eee; color: #333; border: 1px solid #bbb; }
+    .lang-btn.selected { background: #2255a4; color: #fff; border: none; }
+    .btn-row { display: flex; gap: 4%; }
+    .result { margin-top: 24px; padding: 14px; background: #eef6fa; border-radius: 8px; border-left: 4px solid #2295d1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="btn-row">
+      <button type="button" class="lang-btn selected" id="btn-it">🇮🇹</button>
+      <button type="button" class="lang-btn" id="btn-en">🇬🇧</button>
+    </div>
+    <h2 id="title">Selettore Contenitore Cavo 2AWG</h2>
+    <form id="cableForm">
+      <label for="length" id="lbl-length">Lunghezza cavo desiderata (metri):</label>
+      <input type="number" id="length" min="1" max="36" required>
+
+      <label for="section" id="lbl-section">Tipo cavo:</label>
+      <select id="section" required>
+        <option value="">Scegli sezione</option>
+        <option value="2/3">2 AWG / 3 fili</option>
+        <option value="2/4">2 AWG / 4 fili</option>
+      </select>
+      
+      <button type="submit" id="submitBtn">Trova contenitore</button>
+    </form>
+
+    <div id="result" class="result" style="display: none;"></div>
+  </div>
+
+  <script>
+    // Conversion constants
+    const meterToFeet = 3.28084;
+    const cmToInches = 0.393701;
+
+    // DATA - All in METRIC (cm/metri)
+    const capacitiesMetric = {
+      '2/3': [
+        { maxLen: 23, size: 'Custom: 24” (60cm) diam x 22” (56cm) h', sizeEn: 'Custom: 24” (60 cm) dia x 22” (56 cm) h' },
+        { maxLen: 30, size: 'Custom: 24” (60cm) diam x 26” (66cm) h', sizeEn: 'Custom: 24” (60 cm) dia x 26” (66 cm) h' },
+        { maxLen: 36, size: 'Custom: 24” (60cm) diam x 30” (76cm) h', sizeEn: 'Custom: 24” (60 cm) dia x 30” (76 cm) h' },
+      ],
+      '2/4': [
+        { maxLen: 23, size: 'Custom: 26” (66cm) diam x 24” (60cm) h', sizeEn: 'Custom: 26” (66 cm) dia x 24” (60 cm) h' },
+        { maxLen: 30, size: 'Custom: 26” (66cm) diam x 28” (71cm) h', sizeEn: 'Custom: 26” (66 cm) dia x 28” (71 cm) h' },
+        { maxLen: 36, size: 'Custom: 26” (66cm) diam x 32” (81cm) h', sizeEn: 'Custom: 26” (66 cm) dia x 32” (81 cm) h' },
+      ]
+    };
+    const container85480Metric = {
+      '2/3': { max: 36, dim: '26” (66cm) diam x 34” (86cm) h', dimEn: '26” (66 cm) dia x 34” (86 cm) h' },
+      '2/4': { max: 30, dim: '26” (66cm) diam x 34” (86cm) h', dimEn: '26” (66 cm) dia x 34” (86 cm) h' }
+    };
+
+    // ENGLISH versions (ft/in)
+    function convertLen(m) { return (m * meterToFeet).toFixed(1); }
+    function convertCm(cm) { return Math.round(cm * cmToInches); }
+    function containerDimImperial(dim) {
+      // "26” (66cm) diam x 34” (86cm) h"
+      return dim.replace(/(\d+)” \((\d+)cm\)/g, (_, inch, cm) => {
+        const valInch = convertCm(cm);
+        return `${valInch}” (${cm} cm)`;
+      });
+    }
+
+    // TEXTS for both languages
+    const texts = {
+      it: {
+        title: "Selettore Contenitore Cavo 2AWG",
+        length: "Lunghezza cavo desiderata (metri):",
+        section: "Tipo cavo:",
+        options: ["Scegli sezione", "2 AWG / 3 fili", "2 AWG / 4 fili"],
+        btn: "Trova contenitore",
+        recommended: "Consigliato:",
+        custom: "Soluzione custom:",
+        capacity: "Capacità",
+        warning: "Attenzione: Non esiste contenitore standard per questa lunghezza. Contattare il fornitore.",
+        notFound: "Non abbiamo trovato una soluzione adatta per questa combinazione.",
+        maxNote: "Serve la capacità massima: verificare spazio disponibile.",
+        unit: "m"
+      },
+      en: {
+        title: "2AWG Cable Storage Selector",
+        length: "Required cable length (feet):",
+        section: "Cable type:",
+        options: ["Select type", "2 AWG / 3 wires", "2 AWG / 4 wires"],
+        btn: "Find container",
+        recommended: "Recommended:",
+        custom: "Custom solution:",
+        capacity: "Capacity",
+        warning: "Warning: No standard container for this length. Contact supplier.",
+        notFound: "No suitable solution found for this combination.",
+        maxNote: "Maximum capacity: check available space.",
+        unit: "ft"
+      }
+    };
+
+    let currentLang = 'it'; // Default Italian
+
+    // Update form language/units
+    function updateLang(lang) {
+      currentLang = lang;
+      const t = texts[lang];
+
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('lbl-length').textContent = t.length;
+      document.getElementById('lbl-section').textContent = t.section;
+      document.getElementById('submitBtn').textContent = t.btn;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById(lang === 'it' ? 'btn-it' : 'btn-en').classList.add('selected');
+
+      // Options
+      const opts = document.getElementById('section').options;
+      opts[0].text = t.options[0];
+      opts[1].text = t.options[1];
+      opts[2].text = t.options[2];
+      // Input unit
+      document.getElementById('length').value = "";
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('length').placeholder = lang === 'it' ? 'Es: 12' : 'e.g. 40';
+
+      // Adjust min/max (imperial can go up to 118ft or 98ft)
+      document.getElementById('length').min = "1";
+      document.getElementById('length').max = lang === 'it' ? "36" : "118";
+    }
+
+    // On submit
+    document.getElementById('cableForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const rawLength = parseFloat(document.getElementById('length').value);
+      const section = document.getElementById('section').value;
+      const resultDiv = document.getElementById('result');
+      if (!section || isNaN(rawLength)) {
+        resultDiv.style.display = 'none';
+        return;
+      }
+      let t = texts[currentLang];
+      let output = '';
+      let length = rawLength;
+
+      // Metrico: niente da convertire
+      // Imperiale: converti feet to metri per confronto con le tabelle
+      let lengthForCheck = length;
+      if (currentLang === 'en') {
+        lengthForCheck = length / meterToFeet;
+      }
+
+      // Standard 85480
+      let maxLen85480 = container85480Metric[section].max;
+      let maxLen85480En = Math.floor(container85480Metric[section].max * meterToFeet);
+      let dim85480 = container85480Metric[section].dim;
+      let dim85480En = containerDimImperial(container85480Metric[section].dim);
+
+      if (
+        (section === '2/3' && lengthForCheck <= 36) ||
+        (section === '2/4' && lengthForCheck <= 30)
+      ) {
+        // Output 85480
+        output += `<strong>${t.recommended}</strong> <br>`;
+        if (currentLang === 'it') {
+          output += `Glendinning 85480 (${section})<br>${dim85480}<br>`;
+          output += `${t.capacity}: ${container85480Metric[section].max} m (${section})`;
+          if ((section === '2/3' && lengthForCheck > 30) || (section === '2/4' && lengthForCheck > 23)) {
+            output += `<br><br><em>${t.maxNote}</em>`;
+          }
+        } else {
+          output += `Glendinning 85480 (${section})<br>${dim85480En}<br>`;
+          output += `${t.capacity}: ${maxLen85480En} ft (${section})`;
+          if ((section === '2/3' && lengthForCheck > 30) || (section === '2/4' && lengthForCheck > 23)) {
+            output += `<br><br><em>${t.maxNote}</em>`;
+          }
+        }
+      } else if (
+        (section === '2/3' && lengthForCheck > 36) ||
+        (section === '2/4' && lengthForCheck > 36)
+      ) {
+        output = t.warning;
+      } else {
+        // Custom solutions
+        let arr = capacitiesMetric[section];
+        let customOptions = arr.filter(opt => lengthForCheck <= opt.maxLen);
+        if (customOptions.length) {
+          const opt = customOptions[0];
+          if (currentLang === 'it') {
+            output = `<strong>${t.custom}</strong><br>${opt.size}<br>${t.capacity}: ${opt.maxLen} m (${section})`;
+          } else {
+            // Convert everything to ft/in
+            output = `<strong>${t.custom}</strong><br>${containerDimImperial(opt.size)}<br>${t.capacity}: ${Math.floor(opt.maxLen * meterToFeet)} ft (${section})`;
+          }
+        } else {
+          output = t.notFound;
+        }
+      }
+      resultDiv.innerHTML = output;
+      resultDiv.style.display = 'block';
+    });
+
+    // LANG BUTTONS
+    document.getElementById('btn-it').onclick = () => updateLang('it');
+    document.getElementById('btn-en').onclick = () => updateLang('en');
+
+    // Inizializza in italiano
+    updateLang('it');
+  </script>
+</body>
+</html>
