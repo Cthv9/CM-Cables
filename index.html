@@ -3,197 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Calcolatore Capacità Cavo CM</title>
+  <title>Calcolatore reale capacità cavo</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" sizes="192x192" href="icon-192.png">
   <link rel="icon" sizes="512x512" href="icon-512.png">
   <meta name="theme-color" content="#2255a4">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; padding: 5vw; background: #f9f9f9; }
-    .container { background: white; padding: 6vw 5vw; border-radius: 12px; box-shadow: 0 2px 8px #0001; max-width: 98vw; width: 410px; margin: 0 auto; }
-    h2 { margin-top: 0; font-size: 2em; }
-    label { display: block; margin: 16px 0 6px; font-size: 1.1em; }
-    select, input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #bbb; font-size: 1.1em; margin-bottom: 2px; }
-    button, .lang-btn { margin-top: 18px; width: 100%; padding: 14px 0; border: none; border-radius: 8px; background: #2255a4; color: white; font-size: 1.15em; cursor: pointer; transition: background 0.2s; }
-    button:active, .lang-btn:active { background: #184077; }
-    .lang-btn { width: 48%; margin: 0 1% 20px 0; background: #eee; color: #333; border: 1px solid #bbb; font-size: 1.1em; }
-    .lang-btn.selected { background: #2255a4; color: #fff; border: none; }
-    .btn-row { display: flex; gap: 4%; }
-    .result { margin-top: 24px; padding: 14px; background: #eef6fa; border-radius: 8px; border-left: 4px solid #2295d1; font-size: 1.15em; }
-    #install-btn { display: none; background: #2295d1; font-size: 1em; margin-top: 18px; width: 100%; border-radius: 8px; padding: 12px 0; }
-    @media (max-width: 600px) {
-      .container { padding: 4vw 2vw; width: 100%; max-width: 100vw; }
-      h2 { font-size: 1.3em; }
-      button, .lang-btn, #install-btn { font-size: 1em; padding: 12px 0; }
-      label, .result { font-size: 1em; }
-      select, input { font-size: 1em; padding: 9px; }
-    }
+    *{box-sizing:border-box;}
+    body{font-family:Arial,sans-serif;padding:5vw;background:#f9f9f9;}
+    .container{background:white;padding:6vw 5vw;border-radius:12px;box-shadow:0 2px 8px #0001;max-width:410px;margin:0 auto;}
+    h2{margin-top:0;font-size:2em;}
+    label{display:block;margin:16px 0 6px;}
+    select,input{width:100%;padding:10px;border-radius:6px;border:1px solid #bbb;font-size:1.1em;}
+    button,.lang-btn{margin-top:18px;width:100%;padding:14px 0;border:none;border-radius:8px;background:#2255a4;color:white;font-size:1.15em;cursor:pointer;transition:background 0.2s;}
+    button:active,.lang-btn:active{background:#184077;}
+    .lang-btn{width:48%;margin:0 1% 20px 0;background:#eee;color:#333;border:1px solid #bbb;font-size:1.1em;}
+    .lang-btn.selected{background:#2255a4;color:#fff;border:none;}
+    .btn-row{display:flex;gap:4%;}
+    .result{margin-top:24px;padding:14px;background:#eef6fa;border-radius:8px;border-left:4px solid #2295d1;font-size:1.15em;}
+    #install-btn{display:none;background:#2295d1;font-size:1em;margin-top:18px;width:100%;border-radius:8px;padding:12px 0;}
+    @media (max-width:600px){.container{padding:4vw 2vw;width:100%;max-width:100vw;}h2{font-size:1.3em;}button,.lang-btn,#install-btn{font-size:1em;padding:12px 0;}label,.result{font-size:1em;}select,input{font-size:1em;padding:9px;}}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="btn-row">
-      <button type="button" class="lang-btn selected" id="btn-it">🇮🇹</button>
-      <button type="button" class="lang-btn" id="btn-en">🇬🇧</button>
+      <button type="button" class="lang-btn selected" id="btn-it">🇮🇹 Italiano</button>
+      <button type="button" class="lang-btn" id="btn-en">🇬🇧 English</button>
     </div>
-    <h2 id="title">Calcolatore Capacità Contenitore Cavo</h2>
-    <form id="calcForm">
-      <label id="lbl-cable" for="cableType">Tipo cavo:</label>
+    <h2 id="title">Calcolatore reale capacità cavo</h2>
+    <form id="realForm">
+      <label for="cableType" id="lbl-cable">Tipo cavo:</label>
       <select id="cableType" required>
-        <option value="">Scegli sezione</option>
-        <option value="2/3">2 AWG / 3 fili</option>
-        <option value="2/4">2 AWG / 4 fili</option>
+        <option value="">Seleziona</option>
+        <option value="2/3">2 AWG / 3 fili (diam 60 cm)</option>
+        <option value="2/4">2 AWG / 4 fili (diam 66 cm)</option>
       </select>
-      <label id="lbl-diam" for="diameter">Diametro contenitore (cm):</label>
-      <input type="number" id="diameter" min="10" required placeholder="Es: 66">
-      <label id="lbl-height" for="height">Altezza contenitore (cm):</label>
-      <input type="number" id="height" min="10" required placeholder="Es: 86">
-      <button type="submit" id="submitBtn">Calcola capacità</button>
+      <label for="height" id="lbl-height">Altezza contenitore (<span id="unit">cm</span>):</label>
+      <input type="number" id="height" min="10" required placeholder="Es: 70">
+      <button type="submit" id="submitBtn">Calcola</button>
     </form>
     <div id="result" class="result" style="display:none;"></div>
     <button id="install-btn" style="display:none;">Installa App</button>
   </div>
   <script>
-    // Dati reali di riferimento (metrico, cm e metri)
-    const reference = {
-      "2/3": {
-        diam: 66, h: 86, len: 36, // contenitore 85480
-        custom: [
-          {diam: 60, h: 56, len: 23},
-          {diam: 60, h: 66, len: 30},
-          {diam: 60, h: 76, len: 36}
-        ]
-      },
-      "2/4": {
-        diam: 66, h: 86, len: 30, // contenitore 85480
-        custom: [
-          {diam: 66, h: 60, len: 23},
-          {diam: 66, h: 71, len: 30},
-          {diam: 66, h: 81, len: 36}
-        ]
-      }
+    // Dati reali forniti dal produttore
+    const db = {
+      '2/3': [
+        {h:56, len:23},
+        {h:66, len:30},
+        {h:76, len:36}
+      ],
+      '2/4': [
+        {h:60, len:23},
+        {h:71, len:30},
+        {h:81, len:36}
+      ]
     };
 
-    // Conversioni
-    function cmToInches(cm) { return cm / 2.54; }
-    function cmToFeet(cm) { return cm / 30.48; }
-    function feetToCm(ft) { return ft * 30.48; }
-    function inchesToCm(inch) { return inch * 2.54; }
-    function round2(x) { return Math.round(x * 100) / 100; }
-
-    // Traduzioni
+    // Testi multilingua
     const texts = {
       it: {
-        title: "Calcolatore Capacità Contenitore Cavo",
+        title: "Calcolatore reale capacità cavo",
         cable: "Tipo cavo:",
-        options: ["Scegli sezione", "2 AWG / 3 fili", "2 AWG / 4 fili"],
-        diam: "Diametro contenitore (cm):",
-        height: "Altezza contenitore (cm):",
-        diam_in: "Diametro contenitore (in):",
-        height_in: "Altezza contenitore (in):",
-        diam_ft: "Diametro contenitore (ft):",
-        height_ft: "Altezza contenitore (ft):",
-        btn: "Calcola capacità",
-        result: "La capacità stimata del contenitore è:",
-        unit: "metri",
-        legend: "Stima sulla base dei dati forniti dal produttore (Glendinning).",
-        noinput: "Inserisci tutti i dati richiesti.",
+        options: ["Seleziona", "2 AWG / 3 fili (diam 60 cm)", "2 AWG / 4 fili (diam 66 cm)"],
+        height: "Altezza contenitore (<span id='unit'>cm</span>):",
+        btn: "Calcola",
+        result: "Puoi raccogliere circa <b>{X} metri</b> di cavo ({C})",
+        legend: "Dati reali del produttore, interpolazione lineare su altezza.",
+        noinput: "Seleziona tipo e inserisci l'altezza.",
         install: "Installa App"
       },
       en: {
-        title: "Cable Container Capacity Calculator",
+        title: "Real cable capacity calculator",
         cable: "Cable type:",
-        options: ["Select type", "2 AWG / 3 wires", "2 AWG / 4 wires"],
-        diam: "Container diameter (in):",
-        height: "Container height (in):",
-        diam_in: "Container diameter (in):",
-        height_in: "Container height (in):",
-        diam_ft: "Container diameter (ft):",
-        height_ft: "Container height (ft):",
-        btn: "Calculate capacity",
-        result: "The estimated cable capacity is:",
-        unit: "meters",
-        legend: "Estimate based on manufacturer reference data (Glendinning).",
-        noinput: "Please enter all required values.",
+        options: ["Select", "2 AWG / 3 wires (60 cm diam)", "2 AWG / 4 wires (66 cm diam)"],
+        height: "Container height (<span id='unit'>cm</span>):",
+        btn: "Calculate",
+        result: "You can fit about <b>{X} meters</b> of cable ({C})",
+        legend: "Real manufacturer data, linear interpolation on height.",
+        noinput: "Select cable type and enter height.",
         install: "Install App"
       }
     };
-
     let currentLang = 'it';
-    let system = 'metric'; // metric or imperial
-
     function setLang(lang) {
       currentLang = lang;
-      system = (lang === 'it') ? 'metric' : 'imperial';
-
       const t = texts[lang];
       document.getElementById('title').textContent = t.title;
       document.getElementById('lbl-cable').textContent = t.cable;
+      document.getElementById('lbl-height').innerHTML = t.height;
       document.getElementById('submitBtn').textContent = t.btn;
       document.getElementById('install-btn').textContent = t.install;
-
       const opts = document.getElementById('cableType').options;
       opts[0].text = t.options[0];
       opts[1].text = t.options[1];
       opts[2].text = t.options[2];
-
-      if(system === 'metric') {
-        document.getElementById('lbl-diam').textContent = t.diam;
-        document.getElementById('lbl-height').textContent = t.height;
-        document.getElementById('diameter').placeholder = "Es: 66";
-        document.getElementById('height').placeholder = "Es: 86";
-      } else {
-        document.getElementById('lbl-diam').textContent = t.diam_in;
-        document.getElementById('lbl-height').textContent = t.height_in;
-        document.getElementById('diameter').placeholder = "e.g. 26";
-        document.getElementById('height').placeholder = "e.g. 34";
-      }
-      document.getElementById('diameter').value = '';
+      document.getElementById('height').placeholder = lang === 'it' ? 'Es: 70' : 'e.g. 70';
       document.getElementById('height').value = '';
       document.getElementById('result').style.display = "none";
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById(lang === 'it' ? 'btn-it' : 'btn-en').classList.add('selected');
     }
-
     document.getElementById('btn-it').onclick = () => setLang('it');
     document.getElementById('btn-en').onclick = () => setLang('en');
-
     setLang('it'); // default
 
-    // Calcolo proporzionale (volume cilindro e valore reale dal dato produttore)
-    document.getElementById('calcForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const type = document.getElementById('cableType').value;
-      let diam = parseFloat(document.getElementById('diameter').value);
-      let h = parseFloat(document.getElementById('height').value);
-      const t = texts[currentLang];
+    // Interpolazione lineare su altezza (dati reali)
+    function interpolate(data, h) {
+      data = data.sort((a, b) => a.h - b.h);
+      if (h <= data[0].h) return data[0].len * h / data[0].h;
+      if (h >= data[data.length-1].h) return data[data.length-1].len * h / data[data.length-1].h;
+      for (let i = 1; i < data.length; i++) {
+        if (h <= data[i].h) {
+          let x0 = data[i-1].h, y0 = data[i-1].len;
+          let x1 = data[i].h, y1 = data[i].len;
+          return y0 + (y1 - y0) * (h - x0) / (x1 - x0);
+        }
+      }
+    }
 
-      if(!type || !diam || !h) {
-        document.getElementById('result').innerHTML = t.noinput;
-        document.getElementById('result').style.display = "block";
+    document.getElementById('realForm').onsubmit = function(e) {
+      e.preventDefault();
+      const tipo = document.getElementById('cableType').value;
+      const h = parseFloat(document.getElementById('height').value);
+      const res = document.getElementById('result');
+      const t = texts[currentLang];
+      if (!tipo || isNaN(h)) {
+        res.style.display = "block";
+        res.innerHTML = t.noinput;
         return;
       }
-
-      // Conversione in cm per il calcolo (se necessario)
-      if(system === 'imperial') {
-        // dato in inch
-        diam = inchesToCm(diam);
-        h = inchesToCm(h);
+      let data = db[tipo];
+      if (!data) {
+        res.style.display = "block";
+        res.innerHTML = "Diametro non supportato.";
+        return;
       }
+      let len = interpolate(data, h);
+      let descr = document.querySelector('#cableType option:checked').textContent;
+      res.style.display = "block";
+      res.innerHTML = t.result.replace('{X}', len.toFixed(1)).replace('{C}', descr)
+        + "<br><span style='font-size:0.96em;'>" + t.legend + "</span>";
+    };
 
-      // Volume cilindro (non usato come volume assoluto, ma per proporzione)
-      // Calcolo: capacità = lunghezza_cavo_riferimento * (volume_contenitore_utente / volume_contenitore_rif)
-      const ref = reference[type];
-      const v_user = Math.PI * Math.pow(diam/2,2) * h;
-      const v_ref = Math.PI * Math.pow(ref.diam/2,2) * ref.h;
-      const len = ref.len * (v_user / v_ref);
-
-      let resultTxt = t.result + ` <b>${round2(len)} ${t.unit}</b>`;
-      resultTxt += `<br><span style="font-size:0.92em;">${t.legend}</span>`;
-      document.getElementById('result').innerHTML = resultTxt;
-      document.getElementById('result').style.display = "block";
-    });
-
-    // ---- PWA Install prompt ----
+    // ---- PWA install prompt ----
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
